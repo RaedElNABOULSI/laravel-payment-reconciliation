@@ -25,16 +25,23 @@ All notable changes to this package are documented here. Format based on
 
 ### Added
 
-- Support for Laravel 12 and 13 (`illuminate/support|database|console: ^10.0|^11.0|^12.0|^13.0`).
-  Previously the package was uninstallable on any Laravel project created after Laravel 11 - a
-  fresh `laravel/laravel` install today pulls Laravel 12, which the old `^10.0|^11.0` constraint
-  rejected outright. Verified by actually installing into a real, freshly-created Laravel
-  application and by running the full suite against real Laravel 10 and Laravel 12 (SQLite and
-  MySQL); Laravel 13 requires PHP ^8.3, which wasn't available with a working DB extension in the
-  environment this change was made in, so that combination is verified by dependency-resolution
-  and against the official Laravel 12->13 upgrade guide (no listed breaking change touches any API
-  this package uses) rather than by running the suite - CI's new php-8.3/Laravel-13 matrix cell
-  covers that gap going forward.
+- Support for Laravel 12 and 13 (`illuminate/support|database|console: ^12.0|^13.0`, `php: ^8.2`).
+  Previously the package required `^10.0|^11.0`, which made it uninstallable on any Laravel
+  project created after Laravel 11 - a fresh `laravel/laravel` install today pulls Laravel 12.
+  Laravel 10 and 11 were briefly added as well, then **removed again**: both are past their
+  official security-fix window as of the date this change was made (Laravel 10's security support
+  ended February 2025, Laravel 11's ended March 2026 - see
+  https://laravel.com/docs/releases#support-policy). Composer's advisory-blocking correctly
+  refuses to install *any* release of either major as a result - this isn't a bug in this
+  package's constraints, it's Composer declining to install known-vulnerable, unpatched
+  dependencies. Continuing to test against and advertise support for EOL Laravel versions isn't
+  appropriate for a package that manages payment state. Verified by actually installing into a
+  real, freshly-created Laravel application, and by running the full suite against real Laravel 12
+  (SQLite and MySQL); Laravel 13 requires PHP ^8.3, which wasn't available with a working DB
+  extension in the environment this change was made in, so that combination is verified by clean
+  dependency resolution (no advisories, no conflicts) and against the official Laravel 12->13
+  upgrade guide (no listed breaking change touches any API this package uses) rather than by
+  running the suite directly - CI's php-8.3/Laravel-13 job covers that gap going forward.
 - `Payment::markPaid()` convenience method, mirroring `Payment::transitionTo()`.
 - PHPStan (via Larastan) at `level: max`, wired into CI; `composer analyse`.
 - A CI job running the full suite against a real MySQL database, in addition to SQLite, so the
