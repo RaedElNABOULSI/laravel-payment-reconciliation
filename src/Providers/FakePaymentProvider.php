@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Providers;
+namespace Raedev\LaravelPaymentReconciliation\Providers;
 
-use VendorName\LaravelPaymentReconciliation\Contracts\PaymentProvider;
-use VendorName\LaravelPaymentReconciliation\Contracts\ProviderPaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Contracts\ProviderWebhookPayload;
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Exceptions\ProviderUnavailableException;
-use VendorName\LaravelPaymentReconciliation\Exceptions\WebhookVerificationException;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Contracts\PaymentProvider;
+use Raedev\LaravelPaymentReconciliation\Contracts\ProviderPaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Contracts\ProviderWebhookPayload;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Exceptions\ProviderUnavailableException;
+use Raedev\LaravelPaymentReconciliation\Exceptions\WebhookVerificationException;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
 
 /**
  * An in-memory provider adapter with no external dependencies. It is

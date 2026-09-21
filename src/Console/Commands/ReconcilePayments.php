@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Console\Commands;
+namespace Raedev\LaravelPaymentReconciliation\Console\Commands;
 
 use Illuminate\Console\Command;
 use InvalidArgumentException;
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
-use VendorName\LaravelPaymentReconciliation\Providers\ProviderRegistry;
-use VendorName\LaravelPaymentReconciliation\Reconciliation\ReconciliationService;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Providers\ProviderRegistry;
+use Raedev\LaravelPaymentReconciliation\Reconciliation\ReconciliationService;
 
 class ReconcilePayments extends Command
 {

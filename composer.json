@@ -1,5 +1,5 @@
 {
-  "name": "vendor/laravel-payment-reconciliation",
+  "name": "raedev/laravel-payment-reconciliation",
   "description": "Reliable payment state management, idempotency, and provider reconciliation for Laravel applications.",
   "type": "library",
   "license": "MIT",
@@ -30,18 +30,18 @@
   },
   "autoload": {
     "psr-4": {
-      "VendorName\\LaravelPaymentReconciliation\\": "src/"
+      "Raedev\\LaravelPaymentReconciliation\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "VendorName\\LaravelPaymentReconciliation\\Tests\\": "tests/"
+      "Raedev\\LaravelPaymentReconciliation\\Tests\\": "tests/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "VendorName\\LaravelPaymentReconciliation\\PaymentReconciliationServiceProvider"
+        "Raedev\\LaravelPaymentReconciliation\\PaymentReconciliationServiceProvider"
       ]
     }
   },

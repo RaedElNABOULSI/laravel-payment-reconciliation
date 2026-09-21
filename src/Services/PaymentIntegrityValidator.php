@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Services;
+namespace Raedev\LaravelPaymentReconciliation\Services;
 
-use VendorName\LaravelPaymentReconciliation\Exceptions\PaymentIntegrityException;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Exceptions\PaymentIntegrityException;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
 
 /**
  * Centralises the "never assume webhook says paid = payment is valid"

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Tests\Feature;
+namespace Raedev\LaravelPaymentReconciliation\Tests\Feature;
 
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
-use VendorName\LaravelPaymentReconciliation\Reconciliation\ReconciliationResultType;
-use VendorName\LaravelPaymentReconciliation\Reconciliation\ReconciliationService;
-use VendorName\LaravelPaymentReconciliation\Services\PaymentService;
-use VendorName\LaravelPaymentReconciliation\Tests\TestCase;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
+use Raedev\LaravelPaymentReconciliation\Reconciliation\ReconciliationResultType;
+use Raedev\LaravelPaymentReconciliation\Reconciliation\ReconciliationService;
+use Raedev\LaravelPaymentReconciliation\Services\PaymentService;
+use Raedev\LaravelPaymentReconciliation\Tests\TestCase;
 
 /**
  * Mirrors the README "Quickstart" section verbatim so the documented

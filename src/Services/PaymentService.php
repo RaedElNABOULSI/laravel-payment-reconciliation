@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Services;
+namespace Raedev\LaravelPaymentReconciliation\Services;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentBecameUnknown;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentCancelled;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentCreated;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentFailed;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentPaid;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentProcessing;
-use VendorName\LaravelPaymentReconciliation\Exceptions\InvalidStateTransitionException;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
-use VendorName\LaravelPaymentReconciliation\Support\DetectsUniqueConstraintViolations;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentBecameUnknown;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentCancelled;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentCreated;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentFailed;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentPaid;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentProcessing;
+use Raedev\LaravelPaymentReconciliation\Exceptions\InvalidStateTransitionException;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Support\DetectsUniqueConstraintViolations;
 
 /**
  * Application-facing entry point for creating payments and moving them

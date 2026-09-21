@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Casts;
+namespace Raedev\LaravelPaymentReconciliation\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use VendorName\LaravelPaymentReconciliation\Exceptions\InvalidAmountException;
+use Raedev\LaravelPaymentReconciliation\Exceptions\InvalidAmountException;
 
 /**
  * Stores monetary amounts strictly as integers (minor currency units,

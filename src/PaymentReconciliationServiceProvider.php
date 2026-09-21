@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation;
+namespace Raedev\LaravelPaymentReconciliation;
 
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use VendorName\LaravelPaymentReconciliation\Console\Commands\PaymentStatusCommand;
-use VendorName\LaravelPaymentReconciliation\Console\Commands\ReconcilePayments;
-use VendorName\LaravelPaymentReconciliation\Contracts\PaymentProvider;
-use VendorName\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
-use VendorName\LaravelPaymentReconciliation\Providers\ProviderRegistry;
+use Raedev\LaravelPaymentReconciliation\Console\Commands\PaymentStatusCommand;
+use Raedev\LaravelPaymentReconciliation\Console\Commands\ReconcilePayments;
+use Raedev\LaravelPaymentReconciliation\Contracts\PaymentProvider;
+use Raedev\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
+use Raedev\LaravelPaymentReconciliation\Providers\ProviderRegistry;
 
 class PaymentReconciliationServiceProvider extends ServiceProvider
 {

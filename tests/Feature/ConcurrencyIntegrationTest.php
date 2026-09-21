@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Tests\Feature;
+namespace Raedev\LaravelPaymentReconciliation\Tests\Feature;
 
 use PDO;
 use PDOException;
-use VendorName\LaravelPaymentReconciliation\Services\PaymentService;
-use VendorName\LaravelPaymentReconciliation\Tests\TestCase;
+use Raedev\LaravelPaymentReconciliation\Services\PaymentService;
+use Raedev\LaravelPaymentReconciliation\Tests\TestCase;
 
 /**
  * Proves that the row-level locking PaymentService::transitionTo() and

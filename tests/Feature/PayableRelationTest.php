@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Tests\Feature;
+namespace Raedev\LaravelPaymentReconciliation\Tests\Feature;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
-use VendorName\LaravelPaymentReconciliation\Tests\TestCase;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Tests\TestCase;
 
 class PayableRelationTest extends TestCase
 {

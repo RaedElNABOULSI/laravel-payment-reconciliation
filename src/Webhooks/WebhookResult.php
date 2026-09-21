@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Webhooks;
+namespace Raedev\LaravelPaymentReconciliation\Webhooks;
 
-use VendorName\LaravelPaymentReconciliation\Contracts\ProviderPaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Contracts\ProviderPaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
 
 final class WebhookResult
 {

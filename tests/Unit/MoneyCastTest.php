@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Tests\Unit;
+namespace Raedev\LaravelPaymentReconciliation\Tests\Unit;
 
-use VendorName\LaravelPaymentReconciliation\Exceptions\InvalidAmountException;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
-use VendorName\LaravelPaymentReconciliation\Tests\TestCase;
+use Raedev\LaravelPaymentReconciliation\Exceptions\InvalidAmountException;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Tests\TestCase;
 
 class MoneyCastTest extends TestCase
 {

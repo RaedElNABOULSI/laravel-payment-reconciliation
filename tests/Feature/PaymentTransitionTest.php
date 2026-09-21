@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Tests\Feature;
+namespace Raedev\LaravelPaymentReconciliation\Tests\Feature;
 
 use Illuminate\Support\Facades\Event;
 use InvalidArgumentException;
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentBecameUnknown;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentCreated;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentPaid;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentProcessing;
-use VendorName\LaravelPaymentReconciliation\Exceptions\InvalidStateTransitionException;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
-use VendorName\LaravelPaymentReconciliation\Services\PaymentService;
-use VendorName\LaravelPaymentReconciliation\Tests\TestCase;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentBecameUnknown;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentCreated;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentPaid;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentProcessing;
+use Raedev\LaravelPaymentReconciliation\Exceptions\InvalidStateTransitionException;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Services\PaymentService;
+use Raedev\LaravelPaymentReconciliation\Tests\TestCase;
 
 class PaymentTransitionTest extends TestCase
 {

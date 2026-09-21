@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Tests\Unit;
+namespace Raedev\LaravelPaymentReconciliation\Tests\Unit;
 
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Services\PaymentStateMachine;
-use VendorName\LaravelPaymentReconciliation\Tests\TestCase;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Services\PaymentStateMachine;
+use Raedev\LaravelPaymentReconciliation\Tests\TestCase;
 
 class PaymentStateMachineTest extends TestCase
 {

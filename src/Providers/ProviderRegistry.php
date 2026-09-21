@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Providers;
+namespace Raedev\LaravelPaymentReconciliation\Providers;
 
 use InvalidArgumentException;
-use VendorName\LaravelPaymentReconciliation\Contracts\PaymentProvider;
+use Raedev\LaravelPaymentReconciliation\Contracts\PaymentProvider;
 
 /**
  * Resolves the configured PaymentProvider implementation for a given

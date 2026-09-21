@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Contracts;
+namespace Raedev\LaravelPaymentReconciliation\Contracts;
 
-use VendorName\LaravelPaymentReconciliation\Exceptions\WebhookVerificationException;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Exceptions\WebhookVerificationException;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
 
 /**
  * Contract that every payment provider adapter (Stripe, Tap, a custom

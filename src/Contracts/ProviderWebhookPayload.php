@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Contracts;
+namespace Raedev\LaravelPaymentReconciliation\Contracts;
 
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
 
 /**
  * A provider webhook payload normalised into the identifiers and values

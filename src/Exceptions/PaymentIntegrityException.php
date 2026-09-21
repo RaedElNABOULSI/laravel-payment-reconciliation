@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Exceptions;
+namespace Raedev\LaravelPaymentReconciliation\Exceptions;
 
 use RuntimeException;
 

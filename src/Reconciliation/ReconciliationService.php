@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Reconciliation;
+namespace Raedev\LaravelPaymentReconciliation\Reconciliation;
 
 use Illuminate\Support\Facades\Log;
-use VendorName\LaravelPaymentReconciliation\Contracts\PaymentProvider;
-use VendorName\LaravelPaymentReconciliation\Contracts\ProviderPaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentMismatchDetected;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentReconciled;
-use VendorName\LaravelPaymentReconciliation\Exceptions\PaymentIntegrityException;
-use VendorName\LaravelPaymentReconciliation\Exceptions\ProviderUnavailableException;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
-use VendorName\LaravelPaymentReconciliation\Services\PaymentService;
+use Raedev\LaravelPaymentReconciliation\Contracts\PaymentProvider;
+use Raedev\LaravelPaymentReconciliation\Contracts\ProviderPaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentMismatchDetected;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentReconciled;
+use Raedev\LaravelPaymentReconciliation\Exceptions\PaymentIntegrityException;
+use Raedev\LaravelPaymentReconciliation\Exceptions\ProviderUnavailableException;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Services\PaymentService;
 
 /**
  * Compares local payment state against the provider's state and

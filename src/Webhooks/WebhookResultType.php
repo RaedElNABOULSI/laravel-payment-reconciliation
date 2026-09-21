@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Webhooks;
+namespace Raedev\LaravelPaymentReconciliation\Webhooks;
 
 enum WebhookResultType: string
 {

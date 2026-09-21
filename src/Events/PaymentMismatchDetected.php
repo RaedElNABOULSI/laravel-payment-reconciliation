@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Events;
+namespace Raedev\LaravelPaymentReconciliation\Events;
 
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
-use VendorName\LaravelPaymentReconciliation\Reconciliation\ReconciliationResult;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Reconciliation\ReconciliationResult;
 
 /**
  * Fired when local and provider state disagree (status, amount, or

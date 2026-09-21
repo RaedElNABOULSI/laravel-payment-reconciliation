@@ -92,7 +92,7 @@ package. It exists for the moment those things start to matter.
 ## Installation
 
 ```bash
-composer require vendor/laravel-payment-reconciliation
+composer require raedev/laravel-payment-reconciliation
 ```
 
 Laravel auto-discovers `PaymentReconciliationServiceProvider`. No manual registration needed.
@@ -112,7 +112,7 @@ return [
 
     // Maps a provider name (as stored on payments.provider) to its adapter class.
     'providers' => [
-        'fake' => \VendorName\LaravelPaymentReconciliation\Providers\FakePaymentProvider::class,
+        'fake' => \Raedev\LaravelPaymentReconciliation\Providers\FakePaymentProvider::class,
     ],
 
     // Override if these clash with existing tables in your app.
@@ -148,10 +148,10 @@ The `fake` provider is bound by default, so you can exercise the entire lifecycl
 `migrate` - no gateway account, no API keys:
 
 ```php
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
-use VendorName\LaravelPaymentReconciliation\Reconciliation\ReconciliationService;
-use VendorName\LaravelPaymentReconciliation\Services\PaymentService;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
+use Raedev\LaravelPaymentReconciliation\Reconciliation\ReconciliationService;
+use Raedev\LaravelPaymentReconciliation\Services\PaymentService;
 
 $paymentService = app(PaymentService::class);
 $fakeProvider = app(FakePaymentProvider::class); // bound as a singleton
@@ -282,9 +282,9 @@ unknown -> unknown (provider is still unsure, or unreachable - no change)
 ## Webhook handling
 
 ```php
-use VendorName\LaravelPaymentReconciliation\Webhooks\WebhookProcessor;
-use VendorName\LaravelPaymentReconciliation\Exceptions\WebhookVerificationException;
-use VendorName\LaravelPaymentReconciliation\Exceptions\UnknownProviderTransactionException;
+use Raedev\LaravelPaymentReconciliation\Webhooks\WebhookProcessor;
+use Raedev\LaravelPaymentReconciliation\Exceptions\WebhookVerificationException;
+use Raedev\LaravelPaymentReconciliation\Exceptions\UnknownProviderTransactionException;
 
 Route::post('/webhooks/{provider}', function (Request $request, string $provider) {
     $providerAdapter = app(ProviderRegistry::class)->resolve($provider);
@@ -494,7 +494,7 @@ Implement `PaymentProvider`, register it in config, and use it exactly like the 
 ```php
 // config/payment-reconciliation.php
 'providers' => [
-    'fake' => \VendorName\LaravelPaymentReconciliation\Providers\FakePaymentProvider::class,
+    'fake' => \Raedev\LaravelPaymentReconciliation\Providers\FakePaymentProvider::class,
     'my_gateway' => \App\Payments\MyGatewayProvider::class,
 ],
 ```

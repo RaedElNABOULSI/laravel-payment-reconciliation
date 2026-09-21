@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Models;
+namespace Raedev\LaravelPaymentReconciliation\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use VendorName\LaravelPaymentReconciliation\Casts\MoneyCast;
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Services\PaymentService;
+use Raedev\LaravelPaymentReconciliation\Casts\MoneyCast;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Services\PaymentService;
 
 /**
  * @property string $id

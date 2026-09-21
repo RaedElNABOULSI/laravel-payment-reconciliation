@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Support;
+namespace Raedev\LaravelPaymentReconciliation\Support;
 
 use Illuminate\Database\QueryException;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Reconciliation;
+namespace Raedev\LaravelPaymentReconciliation\Reconciliation;
 
 enum ReconciliationResultType: string
 {

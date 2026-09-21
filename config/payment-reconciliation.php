@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use VendorName\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
+use Raedev\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
 
 return [
 

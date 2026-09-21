@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Enums;
+namespace Raedev\LaravelPaymentReconciliation\Enums;
 
 enum PaymentStatus: string
 {

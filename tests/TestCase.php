@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Tests;
+namespace Raedev\LaravelPaymentReconciliation\Tests;
 
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use VendorName\LaravelPaymentReconciliation\PaymentReconciliationServiceProvider;
-use VendorName\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
+use Raedev\LaravelPaymentReconciliation\PaymentReconciliationServiceProvider;
+use Raedev\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
 
 abstract class TestCase extends OrchestraTestCase
 {

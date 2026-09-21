@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Services;
+namespace Raedev\LaravelPaymentReconciliation\Services;
 
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
 
 /**
  * Stateless validator for the payment lifecycle. Holds the single

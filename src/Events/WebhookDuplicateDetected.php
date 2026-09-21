@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Events;
+namespace Raedev\LaravelPaymentReconciliation\Events;
 
 class WebhookDuplicateDetected
 {

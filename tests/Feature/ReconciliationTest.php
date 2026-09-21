@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Tests\Feature;
+namespace Raedev\LaravelPaymentReconciliation\Tests\Feature;
 
 use Illuminate\Support\Facades\Event;
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentMismatchDetected;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentReconciled;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
-use VendorName\LaravelPaymentReconciliation\Reconciliation\ReconciliationResultType;
-use VendorName\LaravelPaymentReconciliation\Reconciliation\ReconciliationService;
-use VendorName\LaravelPaymentReconciliation\Services\PaymentService;
-use VendorName\LaravelPaymentReconciliation\Tests\TestCase;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentMismatchDetected;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentReconciled;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Reconciliation\ReconciliationResultType;
+use Raedev\LaravelPaymentReconciliation\Reconciliation\ReconciliationService;
+use Raedev\LaravelPaymentReconciliation\Services\PaymentService;
+use Raedev\LaravelPaymentReconciliation\Tests\TestCase;
 
 class ReconciliationTest extends TestCase
 {

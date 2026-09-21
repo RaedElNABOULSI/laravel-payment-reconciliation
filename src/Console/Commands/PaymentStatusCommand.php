@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Console\Commands;
+namespace Raedev\LaravelPaymentReconciliation\Console\Commands;
 
 use Illuminate\Console\Command;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
 
 class PaymentStatusCommand extends Command
 {

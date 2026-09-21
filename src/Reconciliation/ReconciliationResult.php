@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Reconciliation;
+namespace Raedev\LaravelPaymentReconciliation\Reconciliation;
 
-use VendorName\LaravelPaymentReconciliation\Contracts\ProviderPaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Contracts\ProviderPaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
 
 /**
  * The outcome of reconciling one payment against its provider. Carries

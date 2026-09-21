@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Exceptions;
+namespace Raedev\LaravelPaymentReconciliation\Exceptions;
 
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
 use RuntimeException;
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
 
 class InvalidStateTransitionException extends RuntimeException
 {

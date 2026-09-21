@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Tests\Feature;
+namespace Raedev\LaravelPaymentReconciliation\Tests\Feature;
 
 use Illuminate\Support\Facades\Event;
-use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentMismatchDetected;
-use VendorName\LaravelPaymentReconciliation\Events\PaymentPaid;
-use VendorName\LaravelPaymentReconciliation\Events\WebhookDuplicateDetected;
-use VendorName\LaravelPaymentReconciliation\Exceptions\UnknownProviderTransactionException;
-use VendorName\LaravelPaymentReconciliation\Exceptions\WebhookVerificationException;
-use VendorName\LaravelPaymentReconciliation\Models\Payment;
-use VendorName\LaravelPaymentReconciliation\Models\WebhookEvent;
-use VendorName\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
-use VendorName\LaravelPaymentReconciliation\Services\PaymentService;
-use VendorName\LaravelPaymentReconciliation\Tests\TestCase;
-use VendorName\LaravelPaymentReconciliation\Webhooks\WebhookProcessor;
-use VendorName\LaravelPaymentReconciliation\Webhooks\WebhookResultType;
+use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentMismatchDetected;
+use Raedev\LaravelPaymentReconciliation\Events\PaymentPaid;
+use Raedev\LaravelPaymentReconciliation\Events\WebhookDuplicateDetected;
+use Raedev\LaravelPaymentReconciliation\Exceptions\UnknownProviderTransactionException;
+use Raedev\LaravelPaymentReconciliation\Exceptions\WebhookVerificationException;
+use Raedev\LaravelPaymentReconciliation\Models\Payment;
+use Raedev\LaravelPaymentReconciliation\Models\WebhookEvent;
+use Raedev\LaravelPaymentReconciliation\Providers\FakePaymentProvider;
+use Raedev\LaravelPaymentReconciliation\Services\PaymentService;
+use Raedev\LaravelPaymentReconciliation\Tests\TestCase;
+use Raedev\LaravelPaymentReconciliation\Webhooks\WebhookProcessor;
+use Raedev\LaravelPaymentReconciliation\Webhooks\WebhookResultType;
 
 class WebhookProcessingTest extends TestCase
 {

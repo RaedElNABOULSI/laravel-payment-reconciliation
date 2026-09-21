@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace VendorName\LaravelPaymentReconciliation\Tests\Unit;
+namespace Raedev\LaravelPaymentReconciliation\Tests\Unit;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use VendorName\LaravelPaymentReconciliation\Support\DetectsUniqueConstraintViolations;
-use VendorName\LaravelPaymentReconciliation\Tests\TestCase;
+use Raedev\LaravelPaymentReconciliation\Support\DetectsUniqueConstraintViolations;
+use Raedev\LaravelPaymentReconciliation\Tests\TestCase;
 
 class DetectsUniqueConstraintViolationsTest extends TestCase
 {
