@@ -17,6 +17,7 @@ the provider's record disagree.
 - [Why payment integrations become inconsistent](#why-payment-integrations-become-inconsistent)
 - [Why not just cron + poll the provider yourself?](#why-not-just-cron--poll-the-provider-yourself)
 - [What this package does NOT do](#what-this-package-does-not-do)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Database setup](#database-setup)
@@ -88,6 +89,18 @@ package. It exists for the moment those things start to matter.
   [Roadmap](#roadmap)) - it ships the contract and a fake provider so you can build one, and the
   currently-implemented gateways are limited to what's listed there.
 - It does **not** provide a dashboard/UI in this version.
+
+## Requirements
+
+- PHP ^8.2
+- Laravel 12 or 13 (`illuminate/support`/`database`/`console` ^12.0 or ^13.0)
+- A configured database connection - any driver Laravel's schema builder supports (MySQL,
+  Postgres, SQLite, SQL Server). Migrations create two tables (`payments`, `webhook_events`).
+
+Laravel 10 and 11 are not supported: both are past their official security-fix window
+(https://laravel.com/docs/releases#support-policy), and Composer's advisory-blocking will refuse
+to install a project pinned to either regardless of this package. If your application is still on
+10 or 11, upgrade Laravel first.
 
 ## Installation
 
