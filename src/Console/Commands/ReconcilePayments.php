@@ -31,15 +31,21 @@ class ReconcilePayments extends Command
     {
         $query = Payment::query();
 
-        if ($paymentId = $this->option('payment')) {
+        $paymentId = $this->option('payment');
+
+        if (is_string($paymentId) && $paymentId !== '') {
             $query->whereKey($paymentId);
         } else {
-            if ($provider = $this->option('provider')) {
+            $provider = $this->option('provider');
+
+            if (is_string($provider) && $provider !== '') {
                 $query->where('provider', $provider);
             }
 
-            if ($status = $this->option('status')) {
-                $status = PaymentStatus::tryFrom($status);
+            $statusOption = $this->option('status');
+
+            if (is_string($statusOption) && $statusOption !== '') {
+                $status = PaymentStatus::tryFrom($statusOption);
 
                 if ($status === null) {
                     $this->error(sprintf(
@@ -55,10 +61,13 @@ class ReconcilePayments extends Command
                 // Default to payments that can still change - reconciling
                 // an already-terminal payment on every scheduled run would
                 // be an unbounded, pointless scan as the table grows.
-                $query->whereNotIn('status', array_map(
-                    fn (PaymentStatus $s) => $s->value,
-                    PaymentStatus::terminal()
-                ));
+                // whereIn (not whereNotIn) on the small set of non-terminal
+                // statuses so the `status` index can actually be used to
+                // skip terminal rows, instead of forcing a full scan the
+                // way a NOT IN predicate typically does.
+                $nonTerminal = array_filter(PaymentStatus::cases(), fn (PaymentStatus $s) => ! $s->isTerminal());
+
+                $query->whereIn('status', array_map(fn (PaymentStatus $s) => $s->value, $nonTerminal));
             }
         }
 

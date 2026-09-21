@@ -18,7 +18,11 @@ return new class extends Migration
             $table->nullableMorphs('payable');
             $table->string('payable_reference')->nullable();
 
-            $table->string('provider')->index();
+            // No standalone index on `provider` - it's already the leftmost
+            // column of the composite unique index below, which serves
+            // "WHERE provider = ?" lookups via a prefix scan without the
+            // extra write-time index-maintenance cost of a second index.
+            $table->string('provider');
             $table->string('provider_transaction_id')->nullable();
 
             $table->unsignedBigInteger('amount');

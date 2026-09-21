@@ -243,8 +243,23 @@ cancelled  -> (terminal)
 ```
 
 Anything else - `paid -> pending`, `paid -> failed`, `cancelled -> paid`, `pending -> paid`, ... -
-throws `InvalidStateTransitionException` and changes nothing. There is no code path that mutates
-`status` without going through this check.
+throws `InvalidStateTransitionException` and changes nothing. Repeating a transition the payment is
+already in (e.g. calling `markProcessing()` twice) is a safe no-op, not an error - this keeps
+retried application calls and resent webhooks idempotent.
+
+**`transitionTo()`/`Payment::transitionTo()` refuse `PaymentStatus::Paid`** and throw
+`InvalidArgumentException` if you try - a bare status transition has no way to verify anything, and
+`paid` is the one state where that matters. Use `markPaid()` (service or model) instead:
+
+```php
+$payment = $paymentService->markPaid($payment, actualAmount: 4200, actualCurrency: 'USD');
+// or, on the model:
+$payment = $payment->markPaid(actualAmount: 4200, actualCurrency: 'USD');
+```
+
+This is the only path that can reach `paid`, on the service, the model, webhook processing, and
+automatic `unknown -> paid` reconciliation alike - there is no code path that mutates `status` to
+`paid` without going through this check.
 
 ## The UNKNOWN state
 
@@ -454,14 +469,23 @@ The package only provides the command - how often it runs is entirely up to your
 ## Testing
 
 ```bash
-composer test
+composer test      # PHPUnit
+composer analyse   # PHPStan (Larastan) at level: max
 ```
 
-Runs the full suite (state transitions, idempotency, webhooks, reconciliation, failure handling)
-against an in-memory SQLite database via Orchestra Testbench. `FakePaymentProvider` is what the
-suite uses to simulate provider responses, timeouts, and signed webhooks - see
-`tests/Feature/*Test.php` for the exact patterns (`setProviderStatus()`, `simulateUnavailable()`,
-`sign()`).
+`composer test` defaults to an in-memory SQLite database via Orchestra Testbench.
+`FakePaymentProvider` is what the suite uses to simulate provider responses, timeouts, and signed
+webhooks - see `tests/Feature/*Test.php` for the exact patterns (`setProviderStatus()`,
+`simulateUnavailable()`, `sign()`).
+
+SQLite has two real limitations for a payments package: `lockForUpdate()` is a no-op at the SQL
+level there (Laravel's SQLite grammar emits no `FOR UPDATE` clause), and two connections to
+`:memory:` are two unrelated empty databases, so genuine multi-connection lock contention can't be
+exercised against it. Set `DB_CONNECTION=mysql` (plus `DB_HOST`/`DB_PORT`/`DB_DATABASE`/
+`DB_USERNAME`/`DB_PASSWORD` as needed - see `tests/TestCase.php`) to run the same suite against a
+real MySQL database instead; CI does this in a dedicated job on every push, and
+`ConcurrencyIntegrationTest` (which proves a second connection is actually blocked by a held row
+lock) only runs there.
 
 ## Extension / custom providers
 

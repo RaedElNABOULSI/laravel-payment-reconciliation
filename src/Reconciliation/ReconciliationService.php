@@ -10,6 +10,7 @@ use VendorName\LaravelPaymentReconciliation\Contracts\ProviderPaymentStatus;
 use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
 use VendorName\LaravelPaymentReconciliation\Events\PaymentMismatchDetected;
 use VendorName\LaravelPaymentReconciliation\Events\PaymentReconciled;
+use VendorName\LaravelPaymentReconciliation\Exceptions\PaymentIntegrityException;
 use VendorName\LaravelPaymentReconciliation\Exceptions\ProviderUnavailableException;
 use VendorName\LaravelPaymentReconciliation\Models\Payment;
 use VendorName\LaravelPaymentReconciliation\Services\PaymentService;
@@ -60,10 +61,28 @@ class ReconciliationService
 
     private function resolveUnknown(Payment $payment, ProviderPaymentStatus $providerStatus): ReconciliationResult
     {
-        if (in_array($providerStatus->status, [PaymentStatus::Paid, PaymentStatus::Failed], true)) {
-            $resolved = $this->paymentService->transitionTo($payment, $providerStatus->status);
+        if ($providerStatus->status === PaymentStatus::Failed) {
+            $resolved = $this->paymentService->transitionTo($payment, PaymentStatus::Failed);
 
             return ReconciliationResult::resolved($resolved, $providerStatus);
+        }
+
+        if ($providerStatus->status === PaymentStatus::Paid) {
+            try {
+                $resolved = $this->paymentService->markPaid(
+                    $payment,
+                    $providerStatus->amount,
+                    $providerStatus->currency,
+                    $providerStatus->providerTransactionId,
+                );
+
+                return ReconciliationResult::resolved($resolved, $providerStatus);
+            } catch (PaymentIntegrityException $e) {
+                // The provider says paid, but its own amount/currency
+                // doesn't match what we expect - do not resolve unknown
+                // to paid just because a status field agrees; report it.
+                return ReconciliationResult::mismatch($payment, $providerStatus, [$e->getMessage()]);
+            }
         }
 
         return ReconciliationResult::stillUnknown($payment, $providerStatus);

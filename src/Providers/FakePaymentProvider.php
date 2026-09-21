@@ -108,18 +108,30 @@ class FakePaymentProvider implements PaymentProvider
 
     public function parseWebhookPayload(array $payload): ProviderWebhookPayload
     {
-        foreach (['event_id', 'provider_transaction_id', 'status'] as $required) {
-            if (! array_key_exists($required, $payload)) {
-                throw new WebhookVerificationException("Fake webhook payload is missing required field \"{$required}\".");
-            }
+        $eventId = $payload['event_id'] ?? null;
+        $providerTransactionId = $payload['provider_transaction_id'] ?? null;
+        $statusValue = $payload['status'] ?? null;
+
+        if (! is_string($eventId) && ! is_int($eventId)) {
+            throw new WebhookVerificationException('Fake webhook payload is missing or has an invalid "event_id" field.');
+        }
+
+        if (! is_string($providerTransactionId) && ! is_int($providerTransactionId)) {
+            throw new WebhookVerificationException('Fake webhook payload is missing or has an invalid "provider_transaction_id" field.');
+        }
+
+        $status = is_string($statusValue) ? PaymentStatus::tryFrom($statusValue) : null;
+
+        if ($status === null) {
+            throw new WebhookVerificationException('Fake webhook payload has an invalid "status" value.');
         }
 
         return new ProviderWebhookPayload(
-            eventId: (string) $payload['event_id'],
-            providerTransactionId: (string) $payload['provider_transaction_id'],
-            status: PaymentStatus::from($payload['status']),
-            amount: isset($payload['amount']) ? (int) $payload['amount'] : null,
-            currency: isset($payload['currency']) ? (string) $payload['currency'] : null,
+            eventId: (string) $eventId,
+            providerTransactionId: (string) $providerTransactionId,
+            status: $status,
+            amount: isset($payload['amount']) && is_numeric($payload['amount']) ? (int) $payload['amount'] : null,
+            currency: isset($payload['currency']) && is_string($payload['currency']) ? $payload['currency'] : null,
             raw: $payload,
         );
     }

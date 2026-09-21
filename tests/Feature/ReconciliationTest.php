@@ -78,6 +78,24 @@ class ReconciliationTest extends TestCase
         $this->assertSame(PaymentStatus::Paid, $payment->fresh()->status);
     }
 
+    public function test_local_unknown_provider_paid_with_amount_mismatch_is_reported_not_applied(): void
+    {
+        Event::fake();
+
+        $provider = $this->fakeProvider();
+        $payment = $this->makePayment(PaymentStatus::Unknown, amount: 1000);
+        // Provider says "paid" but reports a different amount than expected -
+        // auto-resolving unknown -> paid must not happen just because the
+        // status field agrees.
+        $provider->setProviderStatus('tx_1', PaymentStatus::Paid, 500, 'USD');
+
+        $result = app(ReconciliationService::class)->reconcile($payment, $provider);
+
+        $this->assertSame(ReconciliationResultType::Mismatch, $result->type);
+        $this->assertSame(PaymentStatus::Unknown, $payment->fresh()->status);
+        Event::assertDispatched(PaymentMismatchDetected::class);
+    }
+
     public function test_local_unknown_provider_failed_resolves_to_failed(): void
     {
         $provider = $this->fakeProvider();

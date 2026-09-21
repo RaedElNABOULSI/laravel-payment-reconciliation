@@ -16,6 +16,7 @@ class ProviderRegistry
 {
     public function resolve(string $name): PaymentProvider
     {
+        /** @var array<string, class-string> $map */
         $map = config('payment-reconciliation.providers', []);
 
         if (! isset($map[$name])) {
@@ -24,6 +25,14 @@ class ProviderRegistry
             );
         }
 
-        return app($map[$name]);
+        $provider = app($map[$name]);
+
+        if (! $provider instanceof PaymentProvider) {
+            throw new InvalidArgumentException(
+                "The class registered for provider \"{$name}\" (".$map[$name].') does not implement '.PaymentProvider::class.'.'
+            );
+        }
+
+        return $provider;
     }
 }

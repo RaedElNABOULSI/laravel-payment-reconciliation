@@ -53,16 +53,23 @@ class Payment extends Model
         'last_reconciled_at' => 'datetime',
     ];
 
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('payment-reconciliation.table_names.payments', 'payments'));
+        $table = config('payment-reconciliation.table_names.payments', 'payments');
+
+        $this->setTable(is_string($table) ? $table : 'payments');
     }
 
     /**
      * The host application's model this payment belongs to (an order,
      * a subscription, ...), when one exists as an Eloquent model.
+     *
+     * @return MorphTo<Model, $this>
      */
     public function payable(): MorphTo
     {
@@ -74,10 +81,23 @@ class Payment extends Model
      * PaymentService so locking, persistence and events stay in one
      * place regardless of whether callers use the model or the service.
      *
+     * Refuses `PaymentStatus::Paid` - use markPaid() instead, which can
+     * verify the amount/currency before accepting the payment as paid.
+     *
      * @param  array<string, mixed>  $context
      */
     public function transitionTo(PaymentStatus $to, array $context = []): self
     {
         return app(PaymentService::class)->transitionTo($this, $to, $context);
+    }
+
+    /**
+     * Mark this payment paid, optionally verifying the amount/currency
+     * the provider actually reported before doing so. This is the only
+     * way to reach `Paid` - see PaymentService::markPaid().
+     */
+    public function markPaid(?int $actualAmount = null, ?string $actualCurrency = null, ?string $providerTransactionId = null): self
+    {
+        return app(PaymentService::class)->markPaid($this, $actualAmount, $actualCurrency, $providerTransactionId);
     }
 }

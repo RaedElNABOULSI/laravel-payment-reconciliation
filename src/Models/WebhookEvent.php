@@ -24,13 +24,21 @@ class WebhookEvent extends Model
         'payload' => 'array',
     ];
 
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('payment-reconciliation.table_names.webhook_events', 'webhook_events'));
+        $table = config('payment-reconciliation.table_names.webhook_events', 'webhook_events');
+
+        $this->setTable(is_string($table) ? $table : 'webhook_events');
     }
 
+    /**
+     * @return BelongsTo<Payment, $this>
+     */
     public function payment(): BelongsTo
     {
         return $this->belongsTo(Payment::class);

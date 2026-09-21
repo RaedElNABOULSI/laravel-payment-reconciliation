@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace VendorName\LaravelPaymentReconciliation;
 
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use VendorName\LaravelPaymentReconciliation\Console\Commands\PaymentStatusCommand;
 use VendorName\LaravelPaymentReconciliation\Console\Commands\ReconcilePayments;
@@ -21,9 +23,14 @@ class PaymentReconciliationServiceProvider extends ServiceProvider
         // persists for the lifetime of a request, test, or console command.
         $this->app->singleton(FakePaymentProvider::class);
 
-        $this->app->bind(PaymentProvider::class, function ($app) {
+        $this->app->bind(PaymentProvider::class, function (Application $app) {
+            /** @var Repository $config */
+            $config = $app->make('config');
+
+            $defaultProvider = $config->get('payment-reconciliation.default_provider');
+
             return $app->make(ProviderRegistry::class)
-                ->resolve($app->make('config')->get('payment-reconciliation.default_provider'));
+                ->resolve(is_string($defaultProvider) ? $defaultProvider : 'fake');
         });
     }
 

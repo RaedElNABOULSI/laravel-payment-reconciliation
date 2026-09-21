@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace VendorName\LaravelPaymentReconciliation\Tests\Feature;
 
 use Illuminate\Support\Facades\Event;
+use InvalidArgumentException;
 use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
 use VendorName\LaravelPaymentReconciliation\Events\PaymentBecameUnknown;
 use VendorName\LaravelPaymentReconciliation\Events\PaymentCreated;
@@ -141,5 +142,67 @@ class PaymentTransitionTest extends TestCase
         }
 
         $this->assertSame(PaymentStatus::Paid, $payment->fresh()->status);
+    }
+
+    public function test_service_transition_to_paid_is_disallowed(): void
+    {
+        $service = app(PaymentService::class);
+
+        $payment = $service->create(['provider' => 'fake', 'amount' => 5000, 'currency' => 'USD']);
+        $payment = $service->markProcessing($payment);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('markPaid()');
+
+        $service->transitionTo($payment, PaymentStatus::Paid);
+    }
+
+    public function test_model_transition_to_paid_is_disallowed(): void
+    {
+        $payment = Payment::create(['provider' => 'fake', 'amount' => 5000, 'currency' => 'USD']);
+        $payment = app(PaymentService::class)->markProcessing($payment);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $payment->transitionTo(PaymentStatus::Paid);
+    }
+
+    public function test_model_mark_paid_convenience_method_verifies_amount_and_currency(): void
+    {
+        $payment = Payment::create(['provider' => 'fake', 'amount' => 5000, 'currency' => 'USD']);
+        $payment = app(PaymentService::class)->markProcessing($payment);
+
+        $payment = $payment->markPaid(actualAmount: 5000, actualCurrency: 'USD');
+
+        $this->assertSame(PaymentStatus::Paid, $payment->fresh()->status);
+    }
+
+    public function test_repeating_the_same_transition_is_a_safe_no_op(): void
+    {
+        Event::fake();
+
+        $service = app(PaymentService::class);
+
+        $payment = $service->create(['provider' => 'fake', 'amount' => 5000, 'currency' => 'USD']);
+        $payment = $service->markProcessing($payment);
+        $payment = $service->transitionTo($payment, PaymentStatus::Processing);
+
+        $this->assertSame(PaymentStatus::Processing, $payment->fresh()->status);
+        Event::assertDispatched(PaymentProcessing::class, 1);
+    }
+
+    public function test_repeating_mark_paid_is_a_safe_no_op(): void
+    {
+        Event::fake();
+
+        $service = app(PaymentService::class);
+
+        $payment = $service->create(['provider' => 'fake', 'amount' => 5000, 'currency' => 'USD']);
+        $payment = $service->markProcessing($payment);
+        $payment = $service->markPaid($payment, actualAmount: 5000, actualCurrency: 'USD');
+        $payment = $service->markPaid($payment, actualAmount: 5000, actualCurrency: 'USD');
+
+        $this->assertSame(PaymentStatus::Paid, $payment->fresh()->status);
+        Event::assertDispatched(PaymentPaid::class, 1);
     }
 }

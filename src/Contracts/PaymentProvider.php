@@ -52,9 +52,14 @@ interface PaymentProvider
      * Normalise a verified webhook payload into the identifiers and
      * values the package needs to process it safely.
      *
+     * Implementations must validate, not just cast: a missing, wrong-type,
+     * or unrecognised value in any required field must throw rather than
+     * silently coerce (e.g. an invalid `status` string must not reach
+     * PaymentStatus::from() uncaught - use tryFrom() and throw on null).
+     *
      * @param  array<string, mixed>  $payload
      *
-     * @throws WebhookVerificationException if the payload is missing required fields.
+     * @throws WebhookVerificationException if a required field is missing, the wrong type, or an unrecognised value.
      */
     public function parseWebhookPayload(array $payload): ProviderWebhookPayload;
 }

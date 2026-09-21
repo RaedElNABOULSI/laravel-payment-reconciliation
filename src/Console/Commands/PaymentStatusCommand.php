@@ -15,7 +15,15 @@ class PaymentStatusCommand extends Command
 
     public function handle(): int
     {
-        $payment = Payment::find($this->argument('payment'));
+        $id = $this->argument('payment');
+
+        if (! is_string($id)) {
+            $this->error('Invalid payment argument.');
+
+            return self::FAILURE;
+        }
+
+        $payment = Payment::query()->whereKey($id)->first();
 
         if ($payment === null) {
             $this->error('Payment not found.');

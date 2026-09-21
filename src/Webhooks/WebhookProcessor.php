@@ -19,7 +19,6 @@ use VendorName\LaravelPaymentReconciliation\Exceptions\WebhookVerificationExcept
 use VendorName\LaravelPaymentReconciliation\Models\Payment;
 use VendorName\LaravelPaymentReconciliation\Models\WebhookEvent;
 use VendorName\LaravelPaymentReconciliation\Reconciliation\ReconciliationResult;
-use VendorName\LaravelPaymentReconciliation\Services\PaymentIntegrityValidator;
 use VendorName\LaravelPaymentReconciliation\Services\PaymentService;
 use VendorName\LaravelPaymentReconciliation\Support\DetectsUniqueConstraintViolations;
 
@@ -38,7 +37,6 @@ class WebhookProcessor
 
     public function __construct(
         private readonly PaymentService $paymentService,
-        private readonly PaymentIntegrityValidator $integrity,
     ) {}
 
     /**
@@ -105,11 +103,12 @@ class WebhookProcessor
 
         try {
             if ($parsed->status === PaymentStatus::Paid) {
-                $this->integrity->assertAmountAndCurrencyMatch($payment, $parsed->amount, $parsed->currency);
-            }
-
-            if ($payment->status === $parsed->status) {
-                $payment->forceFill(['provider_status' => $parsed->status->value])->save();
+                $payment = $this->paymentService->markPaid(
+                    $payment,
+                    $parsed->amount,
+                    $parsed->currency,
+                    $parsed->providerTransactionId,
+                );
             } else {
                 $payment = $this->paymentService->transitionTo($payment, $parsed->status, [
                     'provider_status' => $parsed->status->value,

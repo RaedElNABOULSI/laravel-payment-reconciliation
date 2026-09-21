@@ -239,6 +239,55 @@ class WebhookProcessingTest extends TestCase
         $this->assertSame(PaymentStatus::Paid, $payment->fresh()->status);
     }
 
+    public function test_webhook_with_invalid_status_value_is_rejected_safely(): void
+    {
+        $provider = $this->fakeProvider();
+        $this->makeProcessingPayment();
+
+        [$payload, $headers] = $this->signedRequest($provider, [
+            'event_id' => 'evt_bad_status',
+            'provider_transaction_id' => 'tx_1',
+            'status' => 'not_a_real_status',
+        ]);
+
+        $this->expectException(WebhookVerificationException::class);
+
+        app(WebhookProcessor::class)->process($payload, $headers, $provider);
+    }
+
+    public function test_webhook_with_array_valued_field_is_rejected_safely(): void
+    {
+        $provider = $this->fakeProvider();
+        $this->makeProcessingPayment();
+
+        $payload = [
+            'event_id' => ['nested' => 'array'],
+            'provider_transaction_id' => 'tx_1',
+            'status' => 'paid',
+        ];
+        $headers = ['X-Fake-Signature' => $provider->sign($payload)];
+
+        $this->expectException(WebhookVerificationException::class);
+
+        app(WebhookProcessor::class)->process($payload, $headers, $provider);
+    }
+
+    public function test_webhook_missing_status_entirely_is_rejected_safely(): void
+    {
+        $provider = $this->fakeProvider();
+        $this->makeProcessingPayment();
+
+        $payload = [
+            'event_id' => 'evt_no_status',
+            'provider_transaction_id' => 'tx_1',
+        ];
+        $headers = ['X-Fake-Signature' => $provider->sign($payload)];
+
+        $this->expectException(WebhookVerificationException::class);
+
+        app(WebhookProcessor::class)->process($payload, $headers, $provider);
+    }
+
     public function test_raw_body_is_forwarded_to_the_provider_for_signature_verification(): void
     {
         $this->makeProcessingPayment();

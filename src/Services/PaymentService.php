@@ -6,6 +6,7 @@ namespace VendorName\LaravelPaymentReconciliation\Services;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 use VendorName\LaravelPaymentReconciliation\Enums\PaymentStatus;
 use VendorName\LaravelPaymentReconciliation\Events\PaymentBecameUnknown;
 use VendorName\LaravelPaymentReconciliation\Events\PaymentCancelled;
@@ -19,10 +20,13 @@ use VendorName\LaravelPaymentReconciliation\Support\DetectsUniqueConstraintViola
 
 /**
  * Application-facing entry point for creating payments and moving them
- * through the state machine. All state transitions go through
- * transitionTo(), which is the only place that locks the row and
- * validates the transition, whether callers use this service directly
- * or the Payment::transitionTo() model convenience method.
+ * through the state machine. Every transition goes through the private
+ * applyTransition(), which is the only place that locks the row,
+ * validates the transition, and persists it - whether callers use
+ * transitionTo(), markPaid(), or the Payment model's convenience
+ * wrappers. transitionTo() refuses `Paid` specifically: that target
+ * must go through markPaid() so amount/currency can be verified first,
+ * which a bare status-only transition has no way to do.
  */
 class PaymentService
 {
@@ -83,16 +87,51 @@ class PaymentService
     }
 
     /**
-     * Validate and apply a state transition under a row lock. This is
-     * the only path that mutates a payment's status.
+     * Validate and apply a state transition under a row lock. Refuses
+     * `Paid` - use markPaid() instead, which can verify amount/currency
+     * before accepting it. This is the only path (besides markPaid)
+     * that mutates a payment's status.
      *
      * @param  array<string, mixed>  $context  Additional attributes to persist alongside the status change.
      */
     public function transitionTo(Payment $payment, PaymentStatus $to, array $context = []): Payment
     {
+        if ($to === PaymentStatus::Paid) {
+            throw new InvalidArgumentException(
+                'Cannot transition to Paid via transitionTo(); call markPaid() instead so the '
+                .'amount and currency can be verified before the payment is accepted.'
+            );
+        }
+
+        return $this->applyTransition($payment, $to, $context);
+    }
+
+    /**
+     * Validate and apply a state transition under a row lock, without
+     * the transitionTo() guard against `Paid`. Shared by transitionTo()
+     * and markPaid() so both go through identical locking, validation,
+     * and event-dispatch logic.
+     *
+     * A transition to the payment's *current* status is treated as a
+     * safe no-op (context is still persisted, but the state machine is
+     * not re-checked and no transition event fires) - this keeps retried
+     * webhooks and repeated application calls idempotent instead of
+     * raising InvalidStateTransitionException for "no-op" cases.
+     *
+     * @param  array<string, mixed>  $context
+     */
+    private function applyTransition(Payment $payment, PaymentStatus $to, array $context): Payment
+    {
         return DB::transaction(function () use ($payment, $to, $context) {
             /** @var Payment $locked */
             $locked = Payment::query()->whereKey($payment->getKey())->lockForUpdate()->firstOrFail();
+
+            if ($locked->status === $to) {
+                $locked->fill($context);
+                $locked->save();
+
+                return $locked;
+            }
 
             if (! $this->stateMachine->can($locked->status, $to)) {
                 throw InvalidStateTransitionException::make($locked->status, $to);
@@ -132,6 +171,10 @@ class PaymentService
      * Mark a payment paid, optionally verifying the amount/currency the
      * provider actually reported against what the payment expects
      * before doing so. Never trust "webhook says paid" alone.
+     *
+     * This is the only path that can reach `Paid` - transitionTo()
+     * refuses that target so this check can never be bypassed by using
+     * the more generic method instead.
      */
     public function markPaid(
         Payment $payment,
@@ -141,11 +184,13 @@ class PaymentService
     ): Payment {
         $this->integrity->assertAmountAndCurrencyMatch($payment, $actualAmount, $actualCurrency);
 
-        $context = $providerTransactionId !== null
-            ? ['provider_transaction_id' => $providerTransactionId]
-            : [];
+        $context = ['provider_status' => PaymentStatus::Paid->value];
 
-        return $this->transitionTo($payment, PaymentStatus::Paid, $context);
+        if ($providerTransactionId !== null) {
+            $context['provider_transaction_id'] = $providerTransactionId;
+        }
+
+        return $this->applyTransition($payment, PaymentStatus::Paid, $context);
     }
 
     private function dispatchTransitionEvent(Payment $payment, PaymentStatus $to): void

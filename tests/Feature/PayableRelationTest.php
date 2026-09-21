@@ -16,10 +16,24 @@ class PayableRelationTest extends TestCase
     {
         parent::setUp();
 
+        // dropIfExists first: on drivers with a persistent test database
+        // (e.g. MySQL in CI - see tests/TestCase.php), a plain create()
+        // here would collide with the table left behind by a previous
+        // test. This only ever worked by accident under SQLite's
+        // per-connection ":memory:" database.
+        Schema::dropIfExists('orders');
+
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
+    }
+
+    protected function tearDown(): void
+    {
+        Schema::dropIfExists('orders');
+
+        parent::tearDown();
     }
 
     public function test_payment_links_to_an_eloquent_model_via_morph_relation(): void
