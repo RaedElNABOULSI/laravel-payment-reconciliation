@@ -25,6 +25,16 @@ All notable changes to this package are documented here. Format based on
 
 ### Added
 
+- Support for Laravel 12 and 13 (`illuminate/support|database|console: ^10.0|^11.0|^12.0|^13.0`).
+  Previously the package was uninstallable on any Laravel project created after Laravel 11 - a
+  fresh `laravel/laravel` install today pulls Laravel 12, which the old `^10.0|^11.0` constraint
+  rejected outright. Verified by actually installing into a real, freshly-created Laravel
+  application and by running the full suite against real Laravel 10 and Laravel 12 (SQLite and
+  MySQL); Laravel 13 requires PHP ^8.3, which wasn't available with a working DB extension in the
+  environment this change was made in, so that combination is verified by dependency-resolution
+  and against the official Laravel 12->13 upgrade guide (no listed breaking change touches any API
+  this package uses) rather than by running the suite - CI's new php-8.3/Laravel-13 matrix cell
+  covers that gap going forward.
 - `Payment::markPaid()` convenience method, mirroring `Payment::transitionTo()`.
 - PHPStan (via Larastan) at `level: max`, wired into CI; `composer analyse`.
 - A CI job running the full suite against a real MySQL database, in addition to SQLite, so the
@@ -51,6 +61,14 @@ All notable changes to this package are documented here. Format based on
   unique index).
 - `MoneyCast`'s own generic type annotation contradicted the runtime float-rejection check it
   implements, causing static analysis to flag that check as dead code.
+- Renamed placeholder `VendorName`/`vendor/laravel-payment-reconciliation` to the real package
+  name and namespace throughout.
+- `PaymentStateMachineTest`'s data providers used doc-comment `@dataProvider` annotations, which
+  PHPUnit 12 (needed for the Laravel 13 combination above) removes support for entirely, not just
+  deprecates - switched to the `#[DataProvider]` attribute, which works across PHPUnit 10-12.
+- `PayableRelationTest` created an ad-hoc `orders` table in `setUp()` with no cleanup; harmless
+  under SQLite's per-connection `:memory:` reset, but broke the very first time the suite ran
+  against a real, persistent MySQL database.
 
 ## Notes
 

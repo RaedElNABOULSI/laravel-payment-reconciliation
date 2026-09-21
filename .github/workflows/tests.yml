@@ -12,7 +12,19 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.1, 8.2, 8.3]
-        laravel: [10.*, 11.*]
+        laravel: [10.*, 11.*, 12.*, 13.*]
+        # illuminate/support's own minimum PHP rises with each major:
+        # 10 -> ^8.1, 11 -> ^8.2, 12 -> ^8.2, 13 -> ^8.3. Skip the
+        # combinations composer could never resolve.
+        exclude:
+          - php: 8.1
+            laravel: 11.*
+          - php: 8.1
+            laravel: 12.*
+          - php: 8.1
+            laravel: 13.*
+          - php: 8.2
+            laravel: 13.*
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 

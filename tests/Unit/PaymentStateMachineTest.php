@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Raedev\LaravelPaymentReconciliation\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Raedev\LaravelPaymentReconciliation\Enums\PaymentStatus;
 use Raedev\LaravelPaymentReconciliation\Services\PaymentStateMachine;
 use Raedev\LaravelPaymentReconciliation\Tests\TestCase;
@@ -35,7 +36,7 @@ class PaymentStateMachineTest extends TestCase
         ];
     }
 
-    /** @dataProvider validTransitions */
+    #[DataProvider('validTransitions')]
     public function test_allows_valid_transitions(PaymentStatus $from, PaymentStatus $to): void
     {
         $this->assertTrue($this->machine->can($from, $to));
@@ -62,7 +63,7 @@ class PaymentStateMachineTest extends TestCase
         ];
     }
 
-    /** @dataProvider invalidTransitions */
+    #[DataProvider('invalidTransitions')]
     public function test_rejects_invalid_transitions(PaymentStatus $from, PaymentStatus $to): void
     {
         $this->assertFalse($this->machine->can($from, $to));
