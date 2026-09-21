@@ -25,6 +25,7 @@ the provider's record disagree.
 - [State transitions](#state-transitions)
 - [The UNKNOWN state](#the-unknown-state)
 - [Webhook handling](#webhook-handling)
+- [Observability - where to see results and errors](#observability---where-to-see-results-and-errors)
 - [Idempotency](#idempotency)
 - [Reconciliation](#reconciliation)
 - [Provider adapter architecture](#provider-adapter-architecture)
@@ -306,6 +307,35 @@ The result is one of:
 - **`Rejected`** - a new, authentic event that described something unsafe (an amount/currency
   mismatch, or a transition the state machine disallows). Nothing was changed; a
   `PaymentMismatchDetected` event was fired so you can alert on it.
+
+## Observability - where to see results and errors
+
+This package has no dashboard and does not log anything to a file or service by default. On a
+fresh install, the only place anything is visible is the database. Everything else is opt-in:
+
+- **The `payments` table is the source of truth.** Query it directly, or run
+  `php artisan payments:status <uuid>` for a one-payment snapshot in the terminal.
+- **The `webhook_events` table** is an audit trail of every accepted webhook delivery, including its
+  raw payload - useful for "did we actually receive this."
+- **Events are fired but nothing listens to them until you do.** `PaymentMismatchDetected` and
+  `PaymentBecameUnknown` are the two worth alerting on - register listeners for them (in your
+  `EventServiceProvider`, or `Event::listen(...)`) if you want a log line, a Slack message, or a
+  Sentry breadcrumb when they happen. See [Events](#events) for the full list.
+- **`payments:reconcile`'s console output is not captured anywhere** when run via the scheduler,
+  unless you add it yourself:
+  ```php
+  Schedule::command('payments:reconcile')
+      ->hourly()
+      ->appendOutputTo(storage_path('logs/payments-reconcile.log'));
+  ```
+- **The one thing logged automatically**: `ReconciliationService` calls `Log::warning()` when a
+  provider is unreachable, which goes to your app's default log channel
+  (`storage/logs/laravel.log` unless configured otherwise). Every other outcome - matched, mismatch,
+  resolved - only reaches a log if your event listener puts it there.
+- **Exceptions from webhook processing** (`WebhookVerificationException`,
+  `UnknownProviderTransactionException`, `PaymentIntegrityException`,
+  `InvalidStateTransitionException`) bubble up to wherever *you* called `WebhookProcessor::process()`
+  - typically your controller, as shown above. The package doesn't log or swallow them for you.
 
 ## Idempotency
 
