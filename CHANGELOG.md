@@ -6,6 +6,34 @@ All notable changes to this package are documented here. Format based on
 
 ## [Unreleased]
 
+### Fixed (reported after trying the package in a real Laravel project)
+
+- `MoneyCast::set()` used `ctype_digit(ltrim($value, '-'))` to validate numeric-string amounts.
+  `ltrim()` strips *every* leading `-`, so a malformed string like `"--5"` passed validation (as
+  `"5"`) while still being `(int)` cast from the original `"--5"` - which PHP parses as `0`, since
+  a second `-` isn't a valid digit after a sign. Silently created a $0 payment instead of rejecting
+  the input. Replaced with a precise `preg_match('/\A-?\d+\z/', $value)` check.
+- The same fix closes a second, related gap: `MoneyCast` never rejected well-formed negative
+  amounts (`-5`, `-5` as a string), even though `amount` is `unsignedBigInteger` - a negative value
+  used to reach the database layer, where behavior is driver-dependent (a raw `QueryException` on
+  MySQL, silent persistence on SQLite, which doesn't enforce "unsigned" at all). `MoneyCast` now
+  explicitly rejects negative amounts with `InvalidAmountException::mustNotBeNegative()`.
+- `PaymentReconciliationServiceProvider::boot()` gated `$this->commands([...])` behind
+  `runningInConsole()`. That check only reflects the PHP SAPI, not whether Artisan is actually
+  being invoked - so `Artisan::call('payments:reconcile')` from application code (a controller, a
+  queued job) threw `CommandNotFoundException`, even though `php artisan payments:reconcile` and
+  the scheduler both worked fine (both genuinely run under the CLI SAPI). Commands are now
+  registered unconditionally; `publishes()` calls remain gated, since those are meaningless outside
+  `vendor:publish` regardless.
+- `DetectsUniqueConstraintViolations` fell back to a `str_contains($message, 'unique')` heuristic
+  for MySQL/SQLite, justified in its own docblock by needing to support Laravel 10 (which lacks
+  `Illuminate\Database\UniqueConstraintViolationException`). That justification was already stale -
+  this package dropped Laravel 10/11 support earlier in `[Unreleased]` - so the trait now defers to
+  `UniqueConstraintViolationException` directly. This is also strictly more correct than the old
+  heuristic: Laravel's own per-driver detection (MySQL error code 1062, Postgres SQLSTATE 23505,
+  SQLite's exact message pattern) additionally covers SQL Server, which the old fallback never
+  handled at all.
+
 ### Changed
 
 - **Breaking**: `PaymentService::transitionTo()` and `Payment::transitionTo()` now refuse

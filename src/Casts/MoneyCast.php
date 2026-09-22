@@ -40,13 +40,27 @@ class MoneyCast implements CastsAttributes
         }
 
         if (is_int($value)) {
-            return $value;
+            $amount = $value;
+        } elseif (is_string($value) && preg_match('/\A-?\d+\z/', $value) === 1) {
+            // A single optional leading '-' followed by digits only - not
+            // ltrim(), which strips every leading '-' and would let a
+            // malformed string like "--5" pass validation as "5" while
+            // still being (int) cast from the original "--5" (which PHP
+            // parses as 0, since '-' is not a valid digit after a sign).
+            $amount = (int) $value;
+        } else {
+            throw InvalidAmountException::mustBeInteger($value);
         }
 
-        if (is_string($value) && ctype_digit(ltrim($value, '-'))) {
-            return (int) $value;
+        if ($amount < 0) {
+            // The `amount` column is unsignedBigInteger - reject negative
+            // values here with a clear message instead of letting them
+            // reach the database, where behavior is driver-dependent
+            // (a raw QueryException on MySQL, silent persistence on
+            // SQLite, which doesn't enforce "unsigned" at all).
+            throw InvalidAmountException::mustNotBeNegative($amount);
         }
 
-        throw InvalidAmountException::mustBeInteger($value);
+        return $amount;
     }
 }

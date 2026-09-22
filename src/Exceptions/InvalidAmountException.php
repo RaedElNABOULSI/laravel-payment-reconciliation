@@ -23,4 +23,12 @@ class InvalidAmountException extends InvalidArgumentException
             get_debug_type($value)
         ));
     }
+
+    public static function mustNotBeNegative(int $value): self
+    {
+        return new self(sprintf(
+            'Payment amount must not be negative, got %d.',
+            $value
+        ));
+    }
 }

@@ -38,6 +38,20 @@ class PaymentReconciliationServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
+        // Registered unconditionally (not gated behind runningInConsole()):
+        // $this->commands() only queues an Artisan::starting() callback, so
+        // it's free outside a real console run, but gating it behind
+        // runningInConsole() means the callback never gets queued at all
+        // during a web request - so Artisan::call('payments:reconcile')
+        // from application code (a controller, a queued job dispatched
+        // from one) would fail with CommandNotFoundException even though
+        // `php artisan payments:reconcile` and the scheduler both work
+        // fine (both genuinely run under the CLI SAPI).
+        $this->commands([
+            ReconcilePayments::class,
+            PaymentStatusCommand::class,
+        ]);
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../config/payment-reconciliation.php' => config_path('payment-reconciliation.php'),
@@ -46,11 +60,6 @@ class PaymentReconciliationServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../database/migrations' => database_path('migrations'),
             ], 'payment-reconciliation-migrations');
-
-            $this->commands([
-                ReconcilePayments::class,
-                PaymentStatusCommand::class,
-            ]);
         }
     }
 }
